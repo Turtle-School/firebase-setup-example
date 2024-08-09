@@ -1,0 +1,13 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+  	// General rule that applies to all documents and subcollections.
+    match /{document=**} {
+      allow read, write: if request.time < timestamp.date(2023, 10, 28);
+    }
+    
+    // Match any document in the 'users' collection with a document ID equal to the authenticated user's UID
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
